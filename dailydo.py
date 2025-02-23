@@ -13,7 +13,6 @@ class DayClock():
         """check if a day has passed. if so, update the internally stored day to the current day"""
 
         currentday = datetime.date.today()
-        print(f"stored day: {self._day}, currentday: {currentday}")
         if currentday > self._day:
             self._day = currentday
             return True
