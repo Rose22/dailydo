@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="POST" action="{{ url_for("add_item") }}">
+	<div class="row">
+		<div class="col">
+			<ul class="list-group list-group-flush">
+				{% for item in todo.todo %}
+					<li class="list-group-item">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1">
+								{{ item }}
+							</div>
+							<div class="btn-group" role="group">
+								<a type="button" class="btn btn-secondary bi-arrow-up" href="{{ url_for("move_item", index=loop.index, direction="up") }}"></a>
+								<a type="button" class="btn btn-secondary bi-arrow-down" href="{{ url_for("move_item", index=loop.index, direction="down") }}"></a>
+								<a type="button" class="btn btn-success bi-check" href="{{ url_for("check_item", index=loop.index) }}"></a>
+							</div>
+						</div>
+					</li>
+				{% endfor %}
+				<li class="list-group-item">
+						<input type="text" placeholder="add new item.." class="form-control" name="new_item" />
+				</li>
+				{% for item in todo.done %}
+					<li class="list-group-item">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1 text-decoration-line-through">
+								{{ item }}
+							</div>
+							<div class="btn-group" role="group">
+								<a type="button" class="btn btn-secondary bi-box-arrow-in-up" href="{{ url_for("uncheck_item", index=loop.index) }}"></a>
+								<a type="button" class="btn btn-danger bi-x" href="{{ url_for("delete_item", index=loop.index) }}"></a>
+							</div>
+						</div>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</form>
+{% endblock content %}
