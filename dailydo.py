@@ -73,23 +73,6 @@ class TodoListStorage:
             for item in done:
                 f.write(f"{item}\n")
 
-class TodoListDailyClock:
-    """triggers every time a day passes"""
-
-    def __init__(self):
-        # store today's date internally. this will be updated each day to check if a day has passed
-        self._day = datetime.date.today()
-
-    def tick(self):
-        """check if a day has passed. if so, update the internally stored day to the current day, and trigger the tick"""
-
-        currentday = datetime.date.today()
-        if currentday > self._day:
-            self._day = currentday
-            return True
-
-        return False
-
 class TodoListDaily(TodoList):
     """a todo list that clears itself every day"""
 
