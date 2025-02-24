@@ -67,4 +67,4 @@ def move_to_today(index):
 
     return flask.redirect(flask.url_for("edit"))
 
-app.run(debug=True)
+app.run(debug=False)
