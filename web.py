@@ -21,12 +21,16 @@ def add_item():
 
     return flask.redirect(flask.url_for("home"))
 
+@app.route("/edit")
+def edit_list():
+    return flask.render_template("home.html", edit=True, todo=todo)
+
 @app.route("/delete/<index>")
 def delete_item(index):
     index = int(index)-1
     todo.delete(index)
     todo.save()
-    return flask.redirect(flask.url_for("home"))
+    return flask.redirect(flask.url_for("edit_list"))
 
 @app.route("/move/<index>/<direction>")
 def move_item(index, direction):
@@ -38,7 +42,7 @@ def move_item(index, direction):
             todo.move_down(index)
     todo.save()
 
-    return flask.redirect(flask.url_for("home"))
+    return flask.redirect(flask.url_for("edit_list"))
 
 @app.route("/check/<index>")
 def check_item(index):
@@ -53,7 +57,7 @@ def uncheck_item(index):
     todo.mark_todo(index)
     todo.save()
 
-    return flask.redirect(flask.url_for("home"))
+    return flask.redirect(flask.url_for("edit_list"))
 
 @app.route("/movetotoday/<index>")
 def move_to_today(index):
@@ -61,6 +65,6 @@ def move_to_today(index):
     todo.move_into_today(index)
     todo.save()
 
-    return flask.redirect(flask.url_for("home"))
+    return flask.redirect(flask.url_for("edit"))
 
-app.run(debug=False)
+app.run(debug=True)

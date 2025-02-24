@@ -1,39 +1,85 @@
 {% extends 'base.html' %}
+{% block navbar %}
+{% if not edit %}
+	<a type="button" class="btn btn-sm btn-secondary bi-pencil mx-3" href="{{ url_for("edit_list") }}"></a>
+{% else %}
+	<a type="button" class="btn btn-sm btn-secondary bi-arrow-90deg-left mx-3" href="{{ url_for("home") }}"></a>
+{% endif %}
+{% endblock %}
 {% block content %}
-<form method="POST" action="{{ url_for("add_item") }}">
 	<div class="row">
 		<div class="col">
 			<ul class="list-group list-group-flush">
-				{% for item in todo.todo %}
-					<li class="list-group-item">
+				{% for item in todo.get_todo() %}
+					<li class="list-group-item list-group-item" id="dailydo-item-{{loop.index}}">
 						<div class="d-flex align-items-center">
-							<div class="flex-grow-1">
+							{% if not edit %}
+								<a class="bi-square text-body" href="{{ url_for("check_item", index=loop.index) }}"></a>
+								&nbsp;
+							{% else %}
+								<span class="bi-dot"></span>
+								&nbsp;
+							{% endif %}
+							<div class="flex-grow-1 text-truncate">
 								{{ item }}
 							</div>
-							<div class="btn-group" role="group">
-								<a type="button" class="btn btn-secondary bi-arrow-up" href="{{ url_for("move_item", index=loop.index, direction="up") }}"></a>
-								<a type="button" class="btn btn-secondary bi-arrow-down" href="{{ url_for("move_item", index=loop.index, direction="down") }}"></a>
-								<a type="button" class="btn btn-success bi-check" href="{{ url_for("check_item", index=loop.index) }}"></a>
-							</div>
+							{% if edit %}
+									<div class="btn-group">
+										<a type="button" class="btn btn-sm btn-danger bi-trash" href="{{ url_for("delete_item", index=loop.index) }}"></a>
+									</div>
+									<div class="p-1"></div>
+									<div class="btn-group">
+										<a type="button" class="btn btn-sm btn-primary bi-arrow-up" href="{{ url_for("move_item", index=loop.index, direction="up") }}"></a>
+										<a type="button" class="btn btn-sm btn-primary bi-arrow-down" href="{{ url_for("move_item", index=loop.index, direction="down") }}"></a>
+									</div>
+							{% endif %}
 						</div>
 					</li>
 				{% endfor %}
-				<li class="list-group-item">
-						<input type="text" placeholder="add new item.." class="form-control" name="new_item" />
+				<li class="list-group-item list-group-item list-group-item-light">
+						<form method="POST" action="{{ url_for("add_item") }}">
+							<input type="text" placeholder="add new item.." class="form-control" name="new_item" {% if edit %}disabled{% endif %} 
+let mi />
+						</form>
 				</li>
-				{% for item in todo.done %}
+				{% for item in todo.get_done() %}
 					<li class="list-group-item">
 						<div class="d-flex align-items-center">
-							<div class="flex-grow-1 text-decoration-line-through">
+							{% if not edit %}
+								<span class="bi-check-square text-body" href="{{ url_for("check_item", index=loop.index) }}"></span>
+								&nbsp;
+							{% else %}
+								<span class="bi-dot text-body"></span>
+								&nbsp;
+							{% endif %}
+							<div class="flex-grow-1 text-decoration-line-through text-truncate">
 								{{ item }}
 							</div>
-							<div class="btn-group" role="group">
-								<a type="button" class="btn btn-secondary bi-box-arrow-in-up" href="{{ url_for("uncheck_item", index=loop.index) }}"></a>
-								<a type="button" class="btn btn-danger bi-x" href="{{ url_for("delete_item", index=loop.index) }}"></a>
-							</div>
+							{% if edit %}
+								<div class="btn-group" role="group">
+									<a type="button" class="btn btn-sm btn-secondary bi-box-arrow-in-up" href="{{ url_for("uncheck_item", index=loop.index) }}"></a>
+								</div>
+							{% endif %}
 						</div>
 					</li>
 				{% endfor %}
+				{% if todo.get_yesterday() %}
+					<li class="list-group-item list-group-item-secondary">
+						yesterday's unfinished tasks
+					</li>
+					{% for item in todo.get_yesterday() %}
+						<li class="list-group-item">
+							<div class="d-flex align-items-center">
+								<div class="flex-grow-1 text-truncate">
+									{{ item }}
+								</div>
+								<div class="btn-group" role="group">
+									<a type="button" class="btn btn-sm btn-secondary bi-box-arrow-in-up" href="{{ url_for("move_to_today", index=loop.index) }}"></a>
+								</div>
+							</div>
+						</li>
+					{% endfor %}
+				{% endif %}
 			</ul>
 		</div>
 	</div>
