@@ -60,11 +60,13 @@ class TodoList():
             return
 
         with open(self.filepath, 'r') as f:
-            file_content = f.read()
-            if not file_content:
+            file_split = f.read().split("---\n")
+            if len(file_split) <= 1:
+                self.todo = []
+                self.done = []
                 return
 
-            todo, done = file_content.split("---\n")
+            todo, done = file_split
             self.todo = todo.strip().split("\n")
             self.done = done.strip().split("\n")
     def save(self):
@@ -94,7 +96,11 @@ dayclock = DayClock()
 @app.route("/")
 def home():
     if dayclock.tick():
+        # if we hit the next day, clear the list
         todo.clear()
+
+    # load from file each time the page loads, to support cross device syncing and the like
+    todo.load()
 
     return flask.render_template("home.html", todo=todo)
 
