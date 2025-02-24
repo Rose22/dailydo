@@ -20,13 +20,16 @@ class TodoList:
         return self._todo.append(item)
 
     def move_up(self, index):
+        """moves an item up the list"""
         if index > 0:
             self._todo[index-1], self._todo[index] = self._todo[index], self._todo[index-1]
     def move_down(self, index):
+        """moves an item down the list"""
         if index < len(self._todo)-1:
             self._todo[index+1], self._todo[index] = self._todo[index], self._todo[index+1]
 
     def mark_done(self, index):
+        """marking an item as done puts it in a seperate list where it's protected from modifications. you can always move it back into the todo list."""
         item = self._todo.pop(index)
         return self._done.append(item)
     def mark_todo(self, index):
@@ -34,7 +37,7 @@ class TodoList:
         return self._todo.insert(0, item)
 
     def delete(self, index):
-        return self._done.pop(index)
+        return self._todo.pop(index)
 
     def clear(self):
         self._todo = []
@@ -81,12 +84,17 @@ class TodoListDaily(TodoList):
         self._storage = TodoListStorage(filepath)
         # store the day the class was initialized. will be updated later by self._tick()
         self._day = datetime.date.today()
+        # roll over tasks from the day onto a yesterday list. we only keep 1 day of history, just in case
+        self._todo_yesterday = []
 
     def _tick(self):
         """check if a day has passed. if so, update the internally stored day to the current day, and clear the list"""
 
         currentday = datetime.date.today()
         if currentday > self._day:
+            # keep a copy of yesterday's list of tasks that weren't marked done
+            self._todo_yesterday = super().get_todo()
+
             self._day = currentday
             self.clear()
 
@@ -96,6 +104,12 @@ class TodoListDaily(TodoList):
     def get_done(self):
         self._tick()
         return super().get_done()
+    def get_yesterday(self):
+        self._tick()
+        return self._todo_yesterday
+    def move_to_today(self, index):
+        self._tick()
+        return self.add(self._todo_yesterday.pop(index))
 
     def load(self):
         todo, done = self._storage.load()

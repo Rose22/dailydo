@@ -55,4 +55,12 @@ def uncheck_item(index):
 
     return flask.redirect(flask.url_for("home"))
 
+@app.route("/movetotoday/<index>")
+def move_to_today(index):
+    index = int(index)-1
+    todo.move_into_today(index)
+    todo.save()
+
+    return flask.redirect(flask.url_for("home"))
+
 app.run(debug=False)
