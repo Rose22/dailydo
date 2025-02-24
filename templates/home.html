@@ -73,9 +73,11 @@ let mi />
 								<div class="flex-grow-1 text-truncate">
 									{{ item }}
 								</div>
-								<div class="btn-group" role="group">
-									<a type="button" class="btn btn-sm btn-secondary bi-box-arrow-in-up" href="{{ url_for("move_to_today", index=loop.index) }}"></a>
-								</div>
+								{% if edit %}
+									<div class="btn-group" role="group">
+										<a type="button" class="btn btn-sm btn-secondary bi-box-arrow-in-up" href="{{ url_for("move_to_today", index=loop.index) }}"></a>
+									</div>
+								{% endif %}
 							</div>
 						</li>
 					{% endfor %}

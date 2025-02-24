@@ -62,9 +62,9 @@ def uncheck_item(index):
 @app.route("/movetotoday/<index>")
 def move_to_today(index):
     index = int(index)-1
-    todo.move_into_today(index)
+    todo.move_to_today(index)
     todo.save()
 
-    return flask.redirect(flask.url_for("edit"))
+    return flask.redirect(flask.url_for("edit_list"))
 
 app.run(debug=False)
